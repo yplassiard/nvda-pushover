@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" type="text/css" href="../style.css" media="screen"/>
+<title>NVDAStore 0.6</title>
+</head>
+<body>
+<h1>NVDAStore</h1>
+<h2>A fast, easy yet secure way to install and update addons within NVDA.</h2>
+<p>Version 0.6</p>
+<h2>Introduction</h2>
+<p>This document describes how to use the NVDAStore Addon, an effective way to download install and update addons within QVDA.
+The main user features of this module are:
+- Easy to use interface
+- A single list presenting available add-ons from various places.
+- An easy way to install an add-on: simply select the desired one, press Install, and you're done.
+- Notify you when an update is available: Simply press Update on the add-on to update it to the latest version supported by your NVDA.
+- Shows what's really working: Some checks are made to ensure the add-on you'll install will work on your system.</p>
+<p>This add-on also provides features for developers:
+- Capability check: You can flag your add-on to work only if certain features are present on the target system, such as TouchScreen, or a specific Windows version or build.
+- No need to notify users: Simply post a new release to the store to allow users to download and update it rightaway, if their system is compatible.
+- Addon storage: Your add-on is stered on our servers to maximize bandwidth.
+- Some much more fun features will be available in the near future.</p>
+<p>This document is divided into two main sections:
+- User Guide: This primary section is used to describe how to use the add-on itself.
+- Developer Guide: If you are a NVDA Add-on Developer, this section will get you step-by-step to a successful publishing into the NVDAStore.</p>
+<h2>User Guide</h2>
+<h3>Installation</h3>
+<p>This add-on installs like any other NVDA add-on. You can download it from the following URL:
+- <a href="https://github.com/YPlassiard/nvda-store/">NVDAStore-0.5.nvda-addon</a></p>
+<p>When downloaded, double-click the "nvdastore-x.y.nvda-addon" file to initiate the install process, while NVDA is running. When the install completes, NVDA needs to be restarted before using the add-on for the first time.</p>
+<h3>Opening the NVDAStore</h3>
+<p>To open the NVDAStore, you can press the <em>NVDA+Shift+C</em> shortcut. Please note that it's always possible to change this shortcut in the NVDA Gesture preference dialog.
+Note that, depending on your internet connection, the store may take a few secons to pop-up, please be patient.</p>
+<h3>The NVDAStore dialog</h3>
+<p>This dialog contains four main areas which are described below:
+- The modules' list: contains available NVDA add-ons with their respective state:
+- - up-to-date: The add-on is installed and up-to-date.
+- - Update available: an update is available for the selected add-on.
+- - Not installed: This add-on is not installed.
+- - Disabled: This add-on has been disabled by the user.
+- Categories' list: Contains the currently available categories. When changing category, the module's list is refreshed to show related results.
+- Description: this multi-line text field contains some information regarding the selected add-on such as its description, and the last version's changelog.
+- Some buttons: When an add-on is selected, some buttons are present to execute actions against this add-on such as:
+- - enable/disable: disable the add-on, keeping it installed but not loading it on NVDA startup.
+- - about: Shows some information regarding the add-on such as summary, author, version, and homepage.
+- - install/update: allows you to install or update (if already installed and new version available) the selected add-on.
+- - remove: uninstalls the selected add-on.
+- - close: closes the NVDAStore.</p>
+<p>When clicking on the "Close" button, NVDA automatically restarts if needed (if you made some modifications such as installing, enabling, disabling or removing an add-on). </p>
+<h3>Configuring the NVDAStore.</h3>
+<p>If you're using an Internet connection that requires a proxy, you can set it up manually for now, following these steps:
+- Press <em>Windows+R</em> to open the run dialog.
+- If you're using an installed copy of NVDA:
+- - Enter "%AppData%\Roaming\NVDA\Addons" in the text field.
+- If you're using a portable copy of NVDA:
+- - Go to the location where you started the portable copy, and then enter the "userConfig\Addon" directory.</p>
+<p>Then, create a simple text file with your favorite editor (may be Notepad for example), and paste the following content:
+<code>{
+  "proxies": {
+    "http"": "your_http_proxy:proxy_port",
+    "ftp": "your_ftp_proxy:proxy_port",
+    "https": "your_https_proxy:proxy_port"
+  }
+}</code></p>
+<p>Save the file as "nvdastore.json" and restart NVDA for the changes to be effective. Please note that the ".json" extension is very important, and be careful of certain editors that automatically add a ".txt" extension at the end of the filename. If you are in this situation, simply rename the file using the Windows Explorer.</p>
+<h3>Issues and bug-reports</h3>
+<p>For issues and bug-reports, feel free to either:
+- Open an <a href="https://github.com/YPlassiard/nvda-store/issue/new">Issue on GitHub</a>
+- Or if you're not familiar with GitHub, <a href="mailto:podcastcecitek@gmail.com">Send a mail</a> to the team.</p>
+<h2>Developer's Guide</h2>
+<p>This section describes what you need to do to publish your add-on into the NVDAStore. We strongly encourage you to use GitHub to host your add-on's source code because our update checker script works perfectly well with the GitHub Releases feature. However, it's completely possible to benefit from all NVDAStore features without a GitHub repository.</p>
+<h3>Architecture description</h3>
+<p>The store can be divided in two parts:
+- The server-side APIs
+- And the NVDAStore Clients (such as this NVDA Add-on, as well as the front-end component of the Cecitek website).</p>
+<h4>Server-side APIs</h4>
+<p>Like many other services, and therefore many other software stores, the server is responsible for answering user requests such as:
+- Get a list of all add-ons.
+- Get a list of all categories.
+- Retrieve all versions for a specified add-on.
+- Download the binary file associated to a specific version.</p>
+<h4>NVDAStore Client</h4>
+<p>The client is responsible for sending requests to the server depending on the user's actions and its configuration, to list and download add-ons. It will also, for the NVDA Add-on client, install the freshly downloaded add-on automatically.</p>
+<h3>Typical workflow</h3>
+<p>The following sequence illustrates a typical user session:
+- The user press <em>NVDA+Shift+N</em>
+- The NVDAStore client connects to the server and asks for an updated list of all available add-ons.
+- At the same time, it also asks for a list of all known add-on's categories.
+- When receiving results, it runs some capability checks upon each add-on version to determine whether an add-on is installable or updatable.
+- It then builds the user-interface with relevant information.
+- When the user clicks on the "Update" or "Install" button, the client asks the server for the add-on binary matching the desired version.
+- When all data has been received, the downloaded add-on is saved to a temporary file and the installation process starts.</p>
+</body>
+</html>
